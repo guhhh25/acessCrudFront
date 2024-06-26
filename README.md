@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+QUERYS DO BANCO 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+CREATE DATABASE CarDB;
 
-## Available Scripts
 
-In the project directory, you can run:
+USE CarDB
+CREATE TABLE dbo.Brands (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL
+);
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+CREATE TABLE dbo.Cars (
+    Id INT PRIMARY KEY IDENTITY,
+    BrandId INT NOT NULL FOREIGN KEY REFERENCES dbo.Brands(Id),
+    Model NVARCHAR(100) NOT NULL,
+    Year INT NOT NULL,
+    Color NVARCHAR(50) NULL
+);
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+CREATE PROCEDURE dbo.InsertCar
+    @BrandId INT,
+    @Model NVARCHAR(100),
+    @Year INT,
+    @Color NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-### `npm run build`
+    INSERT INTO Cars (BrandId, Model, Year, Color)
+    VALUES (@BrandId, @Model, @Year, @Color);
+END
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+CREATE PROCEDURE dbo.UpdateCar
+    @Id INT,
+    @BrandId INT,
+    @Model NVARCHAR(100),
+    @Year INT,
+    @Color NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    UPDATE Cars
+    SET BrandId = @BrandId,
+        Model = @Model,
+        Year = @Year,
+        Color = @Color
+    WHERE Id = @Id;
+END
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+CREATE PROCEDURE dbo.DeleteCar
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    DELETE FROM Cars
+    WHERE Id = @Id;
+END
+GO
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+CREATE PROCEDURE dbo.GetAllCars
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    SELECT Id, BrandId, Model, Year, Color
+    FROM Cars;
+END
+GO
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+CREATE PROCEDURE dbo.UpdateBrand
+    @Id INT,
+    @Name NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    UPDATE Brands
+    SET Name = @Name
+    WHERE Id = @Id;
+END
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+CREATE PROCEDURE dbo.DeleteBrand
+    @Id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-### Analyzing the Bundle Size
+    DELETE FROM Brands
+    WHERE Id = @Id;
+END
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+CREATE PROCEDURE dbo.GetAllBrands
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+    SELECT Id, Name
+    FROM Brands;
+END
 
-### Advanced Configuration
+CREATE PROCEDURE dbo.InsertBrand
+    @Name NVARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    INSERT INTO Brands (Name)
+    VALUES (@Name);
+END
