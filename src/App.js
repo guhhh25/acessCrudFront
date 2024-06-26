@@ -1,24 +1,27 @@
 import logo from './logo.svg';
 import './App.css';
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Home from './home/page';
+import Brand from './brand/page';
+import EditBrand from './brand/editBrand';
+import NewCar from './car/newCar';
+import EditCar from './car/editCar';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+    <Routes>
+        <Route index path='/home' element={<Home />} />
+        <Route index path='/brand' element={<Brand />} />
+        <Route index path={`/editbrand/:id`} element={<EditBrand />} />
+        <Route index path={`/newcar`} element={<NewCar />} />
+        <Route index path={`/editCar/:id`} element={<EditCar />} />
+        </Routes>
+  
+  </BrowserRouter>
   );
 }
 
